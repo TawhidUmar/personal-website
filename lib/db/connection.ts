@@ -1,0 +1,104 @@
+import mysql from 'mysql2/promise';
+
+// ============================================================
+// Connection Pool
+// ============================================================
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST ?? 'localhost',
+  port: parseInt(process.env.DB_PORT ?? '3306', 10),
+  user: process.env.DB_USER ?? 'root',
+  password: process.env.DB_PASSWORD ?? '',
+  database: process.env.DB_NAME ?? 'personal_site',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  timezone: '+00:00',
+  charset: 'utf8mb4',
+  typeCast(field, next) {
+    // Auto-parse TINYINT(1) as boolean
+    if (field.type === 'TINY' && field.length === 1) {
+      return field.string() === '1';
+    }
+    // Auto-parse JSON fields
+    if (field.type === 'JSON') {
+      const value = field.string();
+      if (value === null) return null;
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return next();
+  },
+});
+
+// ============================================================
+// Typed Query Helpers
+// ============================================================
+
+/**
+ * Execute a SELECT query and return typed rows.
+ */
+export async function query<T = Record<string, unknown>>(
+  sql: string,
+  params?: any[]
+): Promise<T[]> {
+  const [rows] = await pool.execute(sql, params);
+  return rows as T[];
+}
+
+/**
+ * Execute a SELECT query and return the first row or null.
+ */
+export async function queryOne<T = Record<string, unknown>>(
+  sql: string,
+  params?: any[]
+): Promise<T | null> {
+  const rows = await query<T>(sql, params);
+  return rows[0] ?? null;
+}
+
+/**
+ * Execute an INSERT / UPDATE / DELETE and return ResultSetHeader.
+ */
+export async function execute(
+  sql: string,
+  params?: any[]
+): Promise<mysql.ResultSetHeader> {
+  const [result] = await pool.execute(sql, params);
+  return result as mysql.ResultSetHeader;
+}
+
+/**
+ * Run multiple operations inside a single transaction.
+ * Automatically commits on success, rolls back on error.
+ */
+export async function transaction<T>(
+  fn: (conn: mysql.PoolConnection) => Promise<T>
+): Promise<T> {
+  const conn = await pool.getConnection();
+  await conn.beginTransaction();
+  try {
+    const result = await fn(conn);
+    await conn.commit();
+    return result;
+  } catch (error) {
+    await conn.rollback();
+    throw error;
+  } finally {
+    conn.release();
+  }
+}
+
+/**
+ * Build a paginated query helper.
+ */
+export function paginate(page: number, limit: number): { offset: number; limit: number } {
+  const safePage = Math.max(1, page);
+  const safeLimit = Math.min(100, Math.max(1, limit));
+  return { offset: (safePage - 1) * safeLimit, limit: safeLimit };
+}
+
+export default pool;
