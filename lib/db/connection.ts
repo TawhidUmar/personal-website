@@ -26,8 +26,8 @@ export function getDbConfig(): DbConfig {
         port: parseInt(url.port || (isTiDB ? '4000' : '3306'), 10),
         user: decodeURIComponent(url.username),
         password: decodeURIComponent(url.password),
-        database: url.pathname.replace(/^\//, '') || 'personal_site',
-        ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
+        database: url.pathname.replace(/^\//, '') || (isTiDB ? 'test' : 'personal_site'),
+        ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } : undefined,
       };
     } catch {
       // Fall through to individual variables
@@ -40,7 +40,7 @@ export function getDbConfig(): DbConfig {
   const port = parseInt(process.env.TIDB_PORT ?? process.env.DB_PORT ?? defaultPort, 10);
   const user = process.env.TIDB_USER ?? process.env.DB_USER ?? 'root';
   const password = process.env.TIDB_PASSWORD ?? process.env.DB_PASSWORD ?? '';
-  const database = process.env.TIDB_DATABASE ?? process.env.DB_NAME ?? 'personal_site';
+  const database = process.env.TIDB_DATABASE ?? process.env.DB_NAME ?? (isTiDB ? 'test' : 'personal_site');
   const isRemote = host !== 'localhost' && host !== '127.0.0.1';
   const useSsl = isTiDB || process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
 
@@ -50,7 +50,7 @@ export function getDbConfig(): DbConfig {
     user,
     password,
     database,
-    ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
+    ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } : undefined,
   };
 }
 

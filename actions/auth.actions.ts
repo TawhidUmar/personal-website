@@ -60,7 +60,7 @@ export async function loginAction(
         ipAddress: ip,
         userAgent: headersList.get('user-agent') ?? undefined,
         newValues: { email, reason: 'invalid_credentials' },
-      });
+      }).catch((err) => console.warn('Audit log write failed:', err));
       return { status: 'error', error: 'Invalid email or password.' };
     }
 
@@ -74,7 +74,7 @@ export async function loginAction(
       isAdmin: user.role_name === 'admin',
     });
 
-    await updateLastLogin(user.id);
+    await updateLastLogin(user.id).catch((err) => console.warn('updateLastLogin failed:', err));
 
     await createAuditLog({
       userId: user.id,
@@ -83,9 +83,26 @@ export async function loginAction(
       entityId: user.id,
       ipAddress: ip,
       userAgent: headersList.get('user-agent') ?? undefined,
-    });
-  } catch {
-    return { status: 'error', error: 'An unexpected error occurred. Please try again.' };
+    }).catch((err) => console.warn('Audit log write failed:', err));
+  } catch (error: unknown) {
+    console.error('Login action error:', error);
+
+    const err = error as { code?: string; message?: string; sqlMessage?: string };
+    let message = 'An unexpected error occurred. Please try again.';
+
+    if (err?.code === 'ER_NO_SUCH_TABLE') {
+      message = 'Database tables have not been created yet. Please run the schema migration.';
+    } else if (err?.code === 'ER_BAD_DB_ERROR') {
+      message = `Database not found (${err.sqlMessage ?? 'unknown'}). Please check your database name.`;
+    } else if (err?.code === 'ECONNREFUSED' || err?.code === 'ETIMEDOUT') {
+      message = 'Could not connect to the database. Please check your DB host and port.';
+    } else if (err?.code === 'ER_ACCESS_DENIED_ERROR') {
+      message = 'Database access denied. Please verify your DB username and password.';
+    } else if (err?.message) {
+      message = `Database connection error: ${err.message}`;
+    }
+
+    return { status: 'error', error: message };
   }
 
   redirect('/admin');
