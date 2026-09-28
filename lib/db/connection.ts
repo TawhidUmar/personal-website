@@ -4,6 +4,9 @@ import mysql from 'mysql2/promise';
 // Connection Pool
 // ============================================================
 
+const isRemote = process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1';
+const useSsl = process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST ?? 'localhost',
   port: parseInt(process.env.DB_PORT ?? '3306', 10),
@@ -15,6 +18,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   timezone: '+00:00',
   charset: 'utf8mb4',
+  ssl: useSsl ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
   typeCast(field, next) {
     // Auto-parse TINYINT(1) as boolean
     if (field.type === 'TINY' && field.length === 1) {
