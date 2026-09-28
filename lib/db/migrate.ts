@@ -6,21 +6,15 @@ import fs from 'fs';
 import path from 'path';
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
+import { getDbConfig } from './connection';
 
 async function migrate() {
   console.log('🗄️  Running migrations...');
 
-  const isRemote = process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1';
-  const useSsl = process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
-
+  const dbConfig = getDbConfig();
   const connection = await mysql.createConnection({
-    host: process.env.DB_HOST ?? 'localhost',
-    port: parseInt(process.env.DB_PORT ?? '3306', 10),
-    user: process.env.DB_USER ?? 'root',
-    password: process.env.DB_PASSWORD ?? '',
-    database: process.env.DB_NAME ?? 'personal_site',
+    ...dbConfig,
     multipleStatements: true,
-    ssl: useSsl ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
   });
 
   try {

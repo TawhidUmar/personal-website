@@ -4,21 +4,65 @@ import mysql from 'mysql2/promise';
 // Connection Pool
 // ============================================================
 
-const isRemote = process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1';
-const useSsl = process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
+export interface DbConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+  ssl?: { minVersion?: string; rejectUnauthorized?: boolean };
+}
+
+export function getDbConfig(): DbConfig {
+  if (process.env.DATABASE_URL) {
+    try {
+      const url = new URL(process.env.DATABASE_URL);
+      const isRemote = url.hostname !== 'localhost' && url.hostname !== '127.0.0.1';
+      const isTiDB = url.hostname.includes('tidbcloud') || Boolean(process.env.TIDB_HOST);
+      const useSsl = isTiDB || process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
+
+      return {
+        host: url.hostname,
+        port: parseInt(url.port || (isTiDB ? '4000' : '3306'), 10),
+        user: decodeURIComponent(url.username),
+        password: decodeURIComponent(url.password),
+        database: url.pathname.replace(/^\//, '') || 'personal_site',
+        ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
+      };
+    } catch {
+      // Fall through to individual variables
+    }
+  }
+
+  const host = process.env.TIDB_HOST ?? process.env.DB_HOST ?? 'localhost';
+  const isTiDB = host.includes('tidbcloud') || Boolean(process.env.TIDB_HOST);
+  const defaultPort = isTiDB ? '4000' : '3306';
+  const port = parseInt(process.env.TIDB_PORT ?? process.env.DB_PORT ?? defaultPort, 10);
+  const user = process.env.TIDB_USER ?? process.env.DB_USER ?? 'root';
+  const password = process.env.TIDB_PASSWORD ?? process.env.DB_PASSWORD ?? '';
+  const database = process.env.TIDB_DATABASE ?? process.env.DB_NAME ?? 'personal_site';
+  const isRemote = host !== 'localhost' && host !== '127.0.0.1';
+  const useSsl = isTiDB || process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
+
+  return {
+    host,
+    port,
+    user,
+    password,
+    database,
+    ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
+  };
+}
+
+const dbConfig = getDbConfig();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST ?? 'localhost',
-  port: parseInt(process.env.DB_PORT ?? '3306', 10),
-  user: process.env.DB_USER ?? 'root',
-  password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_NAME ?? 'personal_site',
+  ...dbConfig,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
   timezone: '+00:00',
   charset: 'utf8mb4',
-  ssl: useSsl ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
   typeCast(field, next) {
     // Auto-parse TINYINT(1) as boolean
     if (field.type === 'TINY' && field.length === 1) {
