@@ -4,6 +4,9 @@ import { SectionHeader } from '@/components/public/SectionHeader';
 import { FeaturedProjectCard } from '@/components/public/FeaturedProjectCard';
 import { Code2, Terminal, Layers, Sparkles } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Software Engineering Projects | Alex Vance',
   description:

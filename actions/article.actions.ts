@@ -84,8 +84,10 @@ export async function createArticleAction(
       newValues: { title: parsed.data.title, status: parsed.data.status },
     });
 
+    revalidatePath('/', 'layout');
     revalidatePath('/');
     revalidatePath('/articles');
+    revalidatePath('/articles/[slug]', 'page');
     revalidatePath(`/articles/${parsed.data.slug}`);
     revalidatePath('/admin/articles');
     revalidatePath('/admin');
@@ -184,11 +186,17 @@ export async function updateArticleAction(
       newValues: { title: parsed.data.title, status: parsed.data.status },
     });
 
+    revalidatePath('/', 'layout');
     revalidatePath('/');
     revalidatePath('/articles');
+    revalidatePath('/articles/[slug]', 'page');
     revalidatePath(`/articles/${parsed.data.slug}`);
+    if (existing.slug !== parsed.data.slug) {
+      revalidatePath(`/articles/${existing.slug}`);
+    }
     revalidatePath('/admin/articles');
     revalidatePath(`/admin/articles/${articleId}/edit`);
+    revalidatePath('/admin');
 
     return {
       status: 'success',
@@ -224,8 +232,11 @@ export async function deleteArticleAction(articleId: number): Promise<ActionStat
       oldValues: { title: existing.title },
     });
 
+    revalidatePath('/', 'layout');
     revalidatePath('/');
     revalidatePath('/articles');
+    revalidatePath('/articles/[slug]', 'page');
+    revalidatePath(`/articles/${existing.slug}`);
     revalidatePath('/admin/articles');
     revalidatePath('/admin');
 

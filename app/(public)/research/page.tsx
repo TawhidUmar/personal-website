@@ -5,6 +5,9 @@ import { SectionHeader } from '@/components/public/SectionHeader';
 import { FeaturedResearchCard } from '@/components/public/FeaturedResearchCard';
 import { FlaskConical, BookOpen, Layers, Cpu } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'AI/ML Research & Publications | Alex Vance',
   description:

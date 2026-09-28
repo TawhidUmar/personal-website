@@ -4,6 +4,9 @@ import { SectionHeader } from '@/components/public/SectionHeader';
 import { FeaturedArticleCard } from '@/components/public/FeaturedArticleCard';
 import { BookOpen, Clock, FileText, Sparkles } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   const [profile, headlines] = await Promise.all([
     getPublicProfile(),

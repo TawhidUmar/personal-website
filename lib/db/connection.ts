@@ -11,6 +11,7 @@ export interface DbConfig {
   password: string;
   database: string;
   ssl?: { minVersion?: string; rejectUnauthorized?: boolean };
+  connectTimeout?: number;
 }
 
 export function getDbConfig(): DbConfig {
@@ -34,13 +35,13 @@ export function getDbConfig(): DbConfig {
     }
   }
 
-  const host = process.env.TIDB_HOST ?? process.env.DB_HOST ?? 'localhost';
+  const host = process.env.DB_HOST ?? process.env.TIDB_HOST ?? 'localhost';
   const isTiDB = host.includes('tidbcloud') || Boolean(process.env.TIDB_HOST);
   const defaultPort = isTiDB ? '4000' : '3306';
-  const port = parseInt(process.env.TIDB_PORT ?? process.env.DB_PORT ?? defaultPort, 10);
-  const user = process.env.TIDB_USER ?? process.env.DB_USER ?? 'root';
-  const password = process.env.TIDB_PASSWORD ?? process.env.DB_PASSWORD ?? '';
-  const database = process.env.TIDB_DATABASE ?? process.env.DB_NAME ?? (isTiDB ? 'test' : 'personal_site');
+  const port = parseInt(process.env.DB_PORT ?? process.env.TIDB_PORT ?? defaultPort, 10);
+  const user = process.env.DB_USER ?? process.env.TIDB_USER ?? 'root';
+  const password = process.env.DB_PASSWORD ?? process.env.TIDB_PASSWORD ?? '';
+  const database = process.env.DB_NAME ?? process.env.TIDB_DATABASE ?? 'personal_site';
   const isRemote = host !== 'localhost' && host !== '127.0.0.1';
   const useSsl = isTiDB || process.env.DB_SSL === 'true' || (isRemote && process.env.DB_SSL !== 'false');
 
@@ -51,6 +52,7 @@ export function getDbConfig(): DbConfig {
     password,
     database,
     ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' } : undefined,
+    connectTimeout: 15000,
   };
 }
 
@@ -59,8 +61,10 @@ const dbConfig = getDbConfig();
 const pool = mysql.createPool({
   ...dbConfig,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 5,
   queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
   timezone: '+00:00',
   charset: 'utf8mb4',
   typeCast(field, next) {

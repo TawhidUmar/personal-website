@@ -100,6 +100,9 @@ const principles = [
   },
 ];
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AboutPage() {
   const [profile, education, headlines, skillCategories, awards] = await Promise.all([
     getPublicProfile(),

@@ -523,9 +523,9 @@ export async function getPublicFeaturedResearch(): Promise<ResearchWithCategory[
 export async function getPublicFeaturedArticles(): Promise<DbArticleWithAuthor[]> {
   try {
     const data = await getFeaturedArticles();
-    return data;
-  } catch {
-    // Graceful fallback
+    if (data && data.length > 0) return data;
+  } catch (err) {
+    console.error('getPublicFeaturedArticles error:', err);
   }
   return fallbackArticles;
 }
@@ -534,9 +534,9 @@ export async function getPublicAllProjects(): Promise<DbProjectWithDetails[]> {
   try {
     const { getAllPublishedProjects } = await import('@/lib/repositories/projects.repository');
     const data = await getAllPublishedProjects();
-    return data;
-  } catch {
-    // Graceful fallback
+    if (data && data.length > 0) return data;
+  } catch (err) {
+    console.error('getPublicAllProjects error:', err);
   }
   return fallbackProjects;
 }
@@ -546,8 +546,8 @@ export async function getPublicProjectBySlug(slug: string): Promise<DbProjectWit
     const { getProjectBySlug } = await import('@/lib/repositories/projects.repository');
     const data = await getProjectBySlug(slug);
     if (data) return data;
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    console.error('getPublicProjectBySlug error:', err);
   }
   return fallbackProjects.find((p) => p.slug === slug) ?? null;
 }
@@ -556,9 +556,9 @@ export async function getPublicAllResearch(): Promise<ResearchWithCategory[]> {
   try {
     const { getAllResearch } = await import('@/lib/repositories/research.repository');
     const data = await getAllResearch();
-    return data;
-  } catch {
-    // Graceful fallback
+    if (data && data.length > 0) return data;
+  } catch (err) {
+    console.error('getPublicAllResearch error:', err);
   }
   return fallbackResearch;
 }
@@ -568,8 +568,8 @@ export async function getPublicResearchBySlug(slug: string): Promise<ResearchWit
     const { getResearchBySlug } = await import('@/lib/repositories/research.repository');
     const data = await getResearchBySlug(slug);
     if (data) return data;
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    console.error('getPublicResearchBySlug error:', err);
   }
   return fallbackResearch.find((r) => r.slug === slug) ?? null;
 }
@@ -578,9 +578,9 @@ export async function getPublicAllArticles(): Promise<DbArticleWithAuthor[]> {
   try {
     const { getRecentArticles } = await import('@/lib/repositories/articles.repository');
     const data = await getRecentArticles(50);
-    return data;
-  } catch {
-    // Graceful fallback
+    if (data && data.length > 0) return data;
+  } catch (err) {
+    console.error('getPublicAllArticles error:', err);
   }
   return fallbackArticles;
 }
@@ -590,8 +590,8 @@ export async function getPublicArticleBySlug(slug: string): Promise<DbArticleWit
     const { getArticleBySlug } = await import('@/lib/repositories/articles.repository');
     const data = await getArticleBySlug(slug);
     if (data) return data;
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    console.error('getPublicArticleBySlug error:', err);
   }
   return fallbackArticles.find((a) => a.slug === slug) ?? null;
 }
