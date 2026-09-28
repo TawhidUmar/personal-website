@@ -75,7 +75,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   }
 
   const comments = await getPublicCommentsForArticle(article.id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
   const articleSchema = generateArticleSchema(article, siteUrl);
 
   const authorName = article.author_name || profile.name || 'Author';

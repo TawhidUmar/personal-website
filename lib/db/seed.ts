@@ -63,10 +63,10 @@ async function seed() {
 
     // ── Default settings ───────────────────────────────────
     const defaultSettings = [
-      ['site_name', 'My Personal Site', 'string', 'general', 'Site display name', 1],
+      ['site_name', process.env.NEXT_PUBLIC_SITE_NAME ?? 'Md Tawhidul Islam', 'string', 'general', 'Site display name', 1],
       ['site_tagline', 'Developer · Researcher · Designer', 'string', 'general', 'Site tagline', 1],
       ['site_description', 'Personal portfolio, research profile, and technical blog.', 'string', 'general', 'Site meta description', 1],
-      ['site_url', process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev', 'string', 'general', 'Canonical site URL', 1],
+      ['site_url', process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me', 'string', 'general', 'Canonical site URL', 1],
       ['contact_email', adminEmail, 'string', 'general', 'Public contact email', 0],
       ['allow_comments', 'true', 'boolean', 'content', 'Allow comments on articles', 0],
       ['comments_require_approval', 'true', 'boolean', 'content', 'Comments need admin approval', 0],

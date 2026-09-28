@@ -23,11 +23,11 @@ const geistMono = JetBrains_Mono({
 // ── Metadata ────────────────────────────────────────────────────
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev'
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me'
   ),
   title: {
-    default: process.env.NEXT_PUBLIC_SITE_NAME ?? 'My Personal Site',
-    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME ?? 'My Personal Site'}`,
+    default: process.env.NEXT_PUBLIC_SITE_NAME ?? 'Md Tawhidul Islam',
+    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME ?? 'Md Tawhidul Islam'}`,
   },
   description:
     'Personal portfolio, AI/ML research profile, and technical blog.',
@@ -39,8 +39,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev',
-    siteName: process.env.NEXT_PUBLIC_SITE_NAME ?? 'My Personal Site',
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me',
+    siteName: process.env.NEXT_PUBLIC_SITE_NAME ?? 'Md Tawhidul Islam',
   },
   twitter: {
     card: 'summary_large_image',

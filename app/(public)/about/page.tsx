@@ -109,7 +109,7 @@ export default async function AboutPage() {
     getPublicAwards(),
   ]);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
   const personSchema = generatePersonSchema(profile, siteUrl, profile?.social_links?.map((s) => s.url) ?? []);
   const name = profile.name || 'Md Tawhidul Islam';
   const location = profile.location || 'Cambridge, MA';

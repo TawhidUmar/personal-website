@@ -139,7 +139,7 @@ export function ProfileForm({ initialProfile }: ProfileFormProps) {
                 type="url"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
-                placeholder="https://yourname.dev"
+                placeholder="https://tawhidulislam.me"
                 className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3 py-2 text-[var(--color-foreground)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
               />
             </div>

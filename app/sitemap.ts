@@ -6,7 +6,7 @@ import {
 } from '@/lib/services/public-data.service';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
 
   // 1. Static Pages
   const staticRoutes: MetadataRoute.Sitemap = [

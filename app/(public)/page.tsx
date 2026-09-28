@@ -81,8 +81,8 @@ export default async function HomePage() {
       getPublicAwards(),
     ]);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
-  const websiteSchema = generateWebSiteSchema(siteUrl, 'Alex Vance | AI Researcher & Software Architect');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
+  const websiteSchema = generateWebSiteSchema(siteUrl, 'Md Tawhidul Islam | AI Researcher & Software Architect');
   const personSchema = generatePersonSchema(profile, siteUrl, profile?.social_links?.map((s) => s.url) ?? []);
 
   // Flatten featured skills for summary strip; fall back to first 8 across categories

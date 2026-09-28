@@ -65,7 +65,7 @@ export default async function ResearchDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
   const paperSchema = generateScholarlyArticleSchema(item, siteUrl);
 
   return (

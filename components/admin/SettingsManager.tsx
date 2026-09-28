@@ -1270,7 +1270,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
                   type="text"
                   value={ogImageUrl}
                   onChange={(e) => setOgImageUrl(e.target.value)}
-                  placeholder="https://yourname.dev/og-default.png"
+                  placeholder="https://tawhidulislam.me/og-default.png"
                   className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3 py-2 text-[var(--color-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] font-mono"
                 />
               </div>

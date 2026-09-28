@@ -64,7 +64,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourname.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tawhidulislam.me';
   const projectSchema = generateProjectSchema(project, siteUrl);
 
   return (
