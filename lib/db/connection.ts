@@ -153,9 +153,10 @@ export async function transaction<T>(
  * Build a paginated query helper.
  */
 export function paginate(page: number, limit: number): { offset: number; limit: number } {
-  const safePage = Math.max(1, page);
-  const safeLimit = Math.min(100, Math.max(1, limit));
-  return { offset: (safePage - 1) * safeLimit, limit: safeLimit };
+  // Use Math.trunc to ensure strict integers — TiDB rejects float LIMIT/OFFSET values
+  const safePage = Math.max(1, Math.trunc(page));
+  const safeLimit = Math.min(100, Math.max(1, Math.trunc(limit)));
+  return { offset: Math.trunc((safePage - 1) * safeLimit), limit: safeLimit };
 }
 
 export default pool;
