@@ -98,13 +98,13 @@ export async function createArticleAction(
       data: { articleId },
     };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : 'Database error';
-    return {
-      status: 'error',
-      error: errorMsg.includes('Duplicate entry')
-        ? 'An article with this slug already exists. Please choose a unique slug.'
-        : 'Failed to create article. Please check database logs.',
-    };
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error('[createArticleAction] Error:', errorMsg);
+    if (errorMsg.includes('Duplicate entry')) {
+      return { status: 'error', error: 'An article with this slug already exists. Please choose a unique slug.' };
+    }
+    // Surface the real DB error so it can be diagnosed
+    return { status: 'error', error: `DB error: ${errorMsg}` };
   }
 }
 
