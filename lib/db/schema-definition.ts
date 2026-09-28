@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS articles (
   INDEX idx_articles_status (status),
   INDEX idx_articles_published_at (published_at),
   INDEX idx_articles_category (category_id),
-  FULLTEXT INDEX ft_articles_search (title, excerpt)
+  INDEX idx_articles_title (title)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 14. Article Tags (junction)
