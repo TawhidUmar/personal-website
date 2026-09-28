@@ -56,35 +56,40 @@ export function getDbConfig(): DbConfig {
   };
 }
 
-const dbConfig = getDbConfig();
-
-const pool = mysql.createPool({
-  ...dbConfig,
-  waitForConnections: true,
-  connectionLimit: 5,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 10000,
-  timezone: '+00:00',
-  charset: 'utf8mb4',
-  typeCast(field, next) {
-    // Auto-parse TINYINT(1) as boolean
-    if (field.type === 'TINY' && field.length === 1) {
-      return field.string() === '1';
-    }
-    // Auto-parse JSON fields
-    if (field.type === 'JSON') {
-      const value = field.string();
-      if (value === null) return null;
-      try {
-        return JSON.parse(value);
-      } catch {
-        return value;
+function createPool() {
+  const dbConfig = getDbConfig();
+  console.log('[DB] Pool created — host:', dbConfig.host, 'user:', dbConfig.user, 'db:', dbConfig.database);
+  return mysql.createPool({
+    ...dbConfig,
+    waitForConnections: true,
+    connectionLimit: 5,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000,
+    timezone: '+00:00',
+    charset: 'utf8mb4',
+    typeCast(field, next) {
+      // Auto-parse TINYINT(1) as boolean
+      if (field.type === 'TINY' && field.length === 1) {
+        return field.string() === '1';
       }
-    }
-    return next();
-  },
-});
+      // Auto-parse JSON fields
+      if (field.type === 'JSON') {
+        const value = field.string();
+        if (value === null) return null;
+        try {
+          return JSON.parse(value);
+        } catch {
+          return value;
+        }
+      }
+      return next();
+    },
+  });
+}
+
+// Singleton pool — created once per process/cold start using current env vars
+const pool = createPool();
 
 // ============================================================
 // Typed Query Helpers
