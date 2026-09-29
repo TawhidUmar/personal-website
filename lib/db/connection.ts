@@ -121,18 +121,21 @@ export async function queryOne<T = Record<string, unknown>>(
 
 /**
  * Execute an INSERT / UPDATE / DELETE and return ResultSetHeader.
+ * Uses pool.query() (not pool.execute) to avoid TiDB prepared statement
+ * issues with Date objects, booleans, and other parameter types.
  */
 export async function execute(
   sql: string,
   params?: any[]
 ): Promise<mysql.ResultSetHeader> {
-  const [result] = await pool.execute(sql, params);
+  const [result] = await pool.query(sql, params);
   return result as mysql.ResultSetHeader;
 }
 
 /**
  * Run multiple operations inside a single transaction.
  * Automatically commits on success, rolls back on error.
+ * Note: use conn.query() (not conn.execute()) inside fn for TiDB compatibility.
  */
 export async function transaction<T>(
   fn: (conn: mysql.PoolConnection) => Promise<T>

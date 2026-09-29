@@ -120,7 +120,7 @@ export async function createProject(
   technologies: string[] = []
 ): Promise<number> {
   return transaction(async (conn) => {
-    const [result] = await conn.execute(
+    const [result] = await conn.query(
       `INSERT INTO projects 
        (author_id, category_id, title, slug, description, long_description, hero_image_url, project_url, github_url, client, role, problem, solution, features, architecture, challenges, results, status, is_featured, display_order, started_at, ended_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -154,7 +154,7 @@ export async function createProject(
 
     if (technologies.length > 0) {
       for (let i = 0; i < technologies.length; i++) {
-        await conn.execute(
+        await conn.query(
           `INSERT INTO project_technologies (project_id, name, display_order) VALUES (?, ?, ?)`,
           [projectId, technologies[i].trim(), i] as any[]
         );
@@ -181,16 +181,16 @@ export async function updateProject(
         return val ?? null;
       });
 
-      await conn.execute(
+      await conn.query(
         `UPDATE projects SET ${setClause} WHERE id = ?`,
         [...values, id] as any[]
       );
     }
 
     if (technologies !== undefined) {
-      await conn.execute(`DELETE FROM project_technologies WHERE project_id = ?`, [id] as any[]);
+      await conn.query(`DELETE FROM project_technologies WHERE project_id = ?`, [id] as any[]);
       for (let i = 0; i < technologies.length; i++) {
-        await conn.execute(
+        await conn.query(
           `INSERT INTO project_technologies (project_id, name, display_order) VALUES (?, ?, ?)`,
           [id, technologies[i].trim(), i] as any[]
         );

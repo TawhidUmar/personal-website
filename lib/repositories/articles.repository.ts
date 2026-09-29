@@ -153,7 +153,7 @@ export async function createArticle(
   tagIds?: number[]
 ): Promise<number> {
   return transaction(async (conn) => {
-    const [result] = await conn.execute(
+    const [result] = await conn.query(
       `INSERT INTO articles 
        (author_id, category_id, title, slug, excerpt, content, cover_image_url, status, reading_time, is_featured, published_at, scheduled_at, seo_title, seo_description, canonical_url, view_count)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
@@ -180,7 +180,7 @@ export async function createArticle(
 
     if (tagIds && tagIds.length > 0) {
       for (const tagId of tagIds) {
-        await conn.execute(
+        await conn.query(
           `INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)`,
           [articleId, tagId] as any[]
         );
@@ -206,16 +206,16 @@ export async function updateArticle(
         return val ?? null;
       });
 
-      await conn.execute(
+      await conn.query(
         `UPDATE articles SET ${setClause} WHERE id = ?`,
         [...values, id] as any[]
       );
     }
 
     if (tagIds !== undefined) {
-      await conn.execute(`DELETE FROM article_tags WHERE article_id = ?`, [id] as any[]);
+      await conn.query(`DELETE FROM article_tags WHERE article_id = ?`, [id] as any[]);
       for (const tagId of tagIds) {
-        await conn.execute(
+        await conn.query(
           `INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)`,
           [id, tagId] as any[]
         );

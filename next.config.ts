@@ -49,8 +49,17 @@ const nextConfig: NextConfig = {
 
     return [
       {
+        // Security headers for all routes
         source: '/(.*)',
         headers,
+      },
+      {
+        // Force no caching for public content pages — ensures DB updates
+        // are reflected immediately without CDN or browser cache interference
+        source: '/(|about|articles|articles/(.*)|projects|projects/(.*)|research|research/(.*)|contact)',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, must-revalidate' },
+        ],
       },
     ];
   },
