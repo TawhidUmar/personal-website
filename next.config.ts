@@ -54,12 +54,18 @@ const nextConfig: NextConfig = {
         headers,
       },
       {
-        // Force no caching for public content pages — ensures DB updates
-        // are reflected immediately without CDN or browser cache interference
-        source: '/(|about|articles|articles/(.*)|projects|projects/(.*)|research|research/(.*)|contact)',
-        headers: [
-          { key: 'Cache-Control', value: 'no-store, must-revalidate' },
-        ],
+        // Force no caching for home page
+        source: '/',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
+      },
+      {
+        // Force no caching for all public content pages and their sub-routes
+        source: '/:path(about|articles|projects|research|contact)',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
+      },
+      {
+        source: '/:section(articles|projects|research)/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
       },
     ];
   },
