@@ -598,28 +598,6 @@ export async function getPublicArticleBySlug(slug: string): Promise<DbArticleWit
 
 
 
-export async function getPublicAllArticles(): Promise<DbArticleWithAuthor[]> {
-  try {
-    const { getRecentArticles } = await import('@/lib/repositories/articles.repository');
-    const data = await getRecentArticles(50);
-    if (data && data.length > 0) return data;
-  } catch (err) {
-    console.error('getPublicAllArticles error:', err);
-  }
-  return fallbackArticles;
-}
-
-export async function getPublicArticleBySlug(slug: string): Promise<DbArticleWithAuthor | null> {
-  try {
-    const { getArticleBySlug } = await import('@/lib/repositories/articles.repository');
-    const data = await getArticleBySlug(slug);
-    if (data) return data;
-  } catch (err) {
-    console.error('getPublicArticleBySlug error:', err);
-  }
-  return fallbackArticles.find((a) => a.slug === slug) ?? null;
-}
-
 export async function getPublicCommentsForArticle(articleId: number) {
   try {
     const { getApprovedCommentsByArticleId } = await import('@/lib/repositories/comments.repository');
