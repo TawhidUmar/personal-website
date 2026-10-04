@@ -730,7 +730,7 @@ export async function getPublicBranding(): Promise<SiteBranding> {
     return {
       siteName: finalSiteName,
       logoText: logoText || finalSiteName || 'portfolio.dev',
-      logoUrl: logoUrl || null,
+      logoUrl: logoUrl || '/icon.svg',
       tagline: tagline || null,
     };
   } catch {
@@ -738,7 +738,7 @@ export async function getPublicBranding(): Promise<SiteBranding> {
     return {
       siteName: defaultName,
       logoText: defaultName || 'portfolio.dev',
-      logoUrl: null,
+      logoUrl: '/icon.svg',
       tagline: null,
     };
   }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import Image from 'next/image';
 import { loginAction } from '@/actions/auth.actions';
 import { Code2, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -30,8 +31,15 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-lg">
           {/* Logo */}
           <div className="mb-8 flex flex-col items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-accent)] text-white shadow-md">
-              <Code2 size={24} />
+            <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl shadow-md">
+              <Image
+                src="/icon.svg"
+                alt="Logo"
+                width={56}
+                height={56}
+                className="h-full w-full object-contain"
+                priority
+              />
             </div>
             <div className="text-center">
               <h1 className="text-xl font-bold text-[var(--color-foreground)]">Admin Login</h1>

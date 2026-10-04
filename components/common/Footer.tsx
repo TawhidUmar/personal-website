@@ -46,20 +46,15 @@ export function Footer({ branding }: FooterProps) {
             href="/"
             className="flex items-center gap-2.5 text-[var(--color-foreground)] transition-opacity hover:opacity-80"
           >
-            {branding?.logoUrl ? (
-              <div className="relative h-7 w-7 overflow-hidden rounded-md border border-[var(--color-border)]">
-                <Image
-                  src={branding.logoUrl}
-                  alt={branding.siteName || 'Logo'}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--color-accent)] text-white">
-                <Code2 size={14} />
-              </span>
-            )}
+            <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-md shadow-sm">
+              <Image
+                src={branding?.logoUrl || '/icon.svg'}
+                alt={branding?.siteName || 'Logo'}
+                width={28}
+                height={28}
+                className="h-full w-full object-contain"
+              />
+            </div>
             <span className="font-mono text-sm font-semibold">
               {renderBrandLogoText(branding?.logoText || 'portfolio.dev')}
             </span>

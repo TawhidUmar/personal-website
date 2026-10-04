@@ -76,20 +76,16 @@ export function Navbar({ branding }: NavbarProps) {
           className="flex items-center gap-2.5 text-[var(--color-foreground)] transition-opacity hover:opacity-80"
           aria-label={branding?.siteName || 'Home'}
         >
-          {branding?.logoUrl ? (
-            <div className="relative h-8 w-8 overflow-hidden rounded-md border border-[var(--color-border)]">
-              <Image
-                src={branding.logoUrl}
-                alt={branding.siteName || 'Logo'}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[var(--color-accent)] text-white shadow-sm">
-              <Code2 size={18} />
-            </span>
-          )}
+          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg shadow-sm">
+            <Image
+              src={branding?.logoUrl || '/icon.svg'}
+              alt={branding?.siteName || 'Logo'}
+              width={32}
+              height={32}
+              className="h-full w-full object-contain"
+              priority
+            />
+          </div>
           <span className="font-mono text-sm font-semibold tracking-tight">
             {renderBrandLogoText(branding?.logoText || 'portfolio.dev')}
           </span>

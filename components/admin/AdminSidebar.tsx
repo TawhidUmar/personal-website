@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -101,10 +102,16 @@ export function AdminSidebar() {
   return (
     <aside className="flex h-full w-60 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)]">
       {/* Brand */}
-      <div className="flex h-14 shrink-0 items-center gap-2 border-b border-[var(--color-border)] px-4">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--color-accent)] text-white">
-          <Code2 size={14} />
-        </span>
+      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-[var(--color-border)] px-4">
+        <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-md shadow-sm">
+          <NextImage
+            src="/icon.svg"
+            alt="Logo"
+            width={28}
+            height={28}
+            className="h-full w-full object-contain"
+          />
+        </div>
         <span className="font-mono text-sm font-semibold text-[var(--color-foreground)]">
           Admin<span className="text-[var(--color-accent)]">Panel</span>
         </span>
